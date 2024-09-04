@@ -737,7 +737,12 @@ class AudioPlayer(threading.Thread):
                 self._resumed.wait()
                 continue
 
-            data = self.source.read()
+            try:
+                data = self.source.read()
+            except Exception as exc:
+                self._current_error = exc
+                self.stop()
+                break
 
             if not data:
                 self.stop()
